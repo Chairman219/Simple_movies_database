@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    
+    
+  <h1>Welcome to HollyMovies!</h1>
+    <a href="{% url 'movie_create' %}">
+    <button class="btn btn-outline-info" style="background-color: #343a40; color: white; margin-bottom: 10px; border-color: white">Create Movie</button>
+    </a>
+  <ul>
+    {% for movie in object_list %}
+      <li>
+          Title: {{ movie.title }}
+          <a href="{% url 'movie_update' movie.pk %}">
+              <button style="margin-bottom: 3px; border-radius: 5px"> Update Movie</button>
+          </a>
+      <a href="{% url 'movie_delete' movie.pk %}">
+          <button style="margin-bottom: 3px; border-radius: 5px"> Delete Movie</button>
+      </a>
+        <a href="{% url "movie_profile" movie.pk %}"><button type="button" class="btn btn-outline-secondary" style="color: black; border-color: black; outline: darkgray" >Info</button></a>
+      </li>
+    {% endfor %}
+  </ul>
+    <img src="{% static "last_dinner.jpg" %}">
+    {% endblock %}

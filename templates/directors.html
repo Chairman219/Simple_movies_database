@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="{% static 'basic_style.css' %}">
+    </head>
+  <h1>Directors</h1>
+    <a href="{% url "director_create" %}">
+        <button class="btn btn-outline-info" style="background-color: #343a40; color: white; margin-bottom: 10px; border-color: white">Add Director</button>
+    </a>
+  <ul>
+    {% for director in object_list %}
+      <li>
+        {{ director.name }} {{ director.surname }} - Movie: {{ director.movie.title }}
+      <a href="{% url "director_delete" director.pk %}">
+          <button style="margin-bottom: 3px; border-radius: 5px">Delete Director</button>
+      </a>        
+      <a href="{% url 'director_update' director.pk %}">
+          <button style="margin-bottom: 3px; border-radius: 5px">Update Director</button>
+      </a>
+      <a href="{% url "director_profile" director.pk %}">
+          <button type="button" class="btn btn-outline-secondary" style="color: black; border-color: black; outline: darkgray" >Info</button>
+      </a>
+      </li>
+    {% endfor %}
+  </ul>
+    <img src="{% static "Director_chair.jpg" %}">
+
+    
+{% endblock %}

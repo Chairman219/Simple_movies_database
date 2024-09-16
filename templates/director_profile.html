@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ director.name }} {{ director.surname }}</h1>
+<h2>Movies:</h2>
+<ul>
+    {% for movie in movies %}
+        <li>{{ movie.title }}</li>
+    {% endfor %}
+</ul>
+<h2>Comments:</h2>
+  <ul>
+    {% for comment in comments %}
+      <li>{{ comment.user.username }}: {{ comment.text }}</li>
+    {% endfor %}
+  </ul>
+
+  {% if user.is_authenticated %}
+    <h3>Add a comment:</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Submit</button>
+    </form>
+  {% else %}
+    <p>You must be logged in to add a comment.</p>
+  {% endif %}
+{% endblock %}

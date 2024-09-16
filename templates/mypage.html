@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Page of user {{ request.user.username }}</h1>
+
+    <ul>
+    <li>Username {{ user.username }}</li>
+    <li>First name {{ user.first_name }}</li>
+    <li>Is active {{ user.is_active }}</li>
+    <li>Date joined {{ user.date_joined }}</li>
+    </ul>
+    <br>
+    <a type="button" class="btn btn-outline-info" href="{% url 'logout' %}" style="margin-left: 10px; background-color: #343a40; color: white; border-color: white">Logout</a>
+    <a type="button" class="btn btn-outline-info" href="{% url 'password_change' %}" style="margin-left: 10px; background-color: #343a40; color: white; border-color: white">Change Password</a>
+    <br>
+    <br>
+    <h3>Uživatelská oprávnění</h3>
+    <table>
+    <tr>
+        <td><b>name</b></td>
+        <td><b>codename</b></td>
+    </tr>
+    {% for permission in user.user_permissions.all %}
+    <tr>
+        <td>{{ permission }}</td>
+        <td>{{ permission.codename }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br>
+    <br>
+    <h3>Skupiny uživatele</h3>
+    {% for group in user.groups.all %}
+        <h4>{{ group }}</h4>
+        <table>
+        <tr>
+            <td><b>name</b></td>
+            <td><b>codename</b></td>
+        </tr>
+        {% for permission in group.permissions.all %}
+        <tr>
+            <td>{{ permission }}</td>
+            <td>{{ permission.codename }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    {% endfor %}
+{% endblock %}

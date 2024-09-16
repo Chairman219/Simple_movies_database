@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<body>
+    <h1>Search</h1>
+    <form action="{% url 'search' %}" method="GET" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1;">
+            {{ search_form }}
+        </div>
+        <input type="submit" style="margin-left: 10px; background-color: #343a40; border-radius: 5px; color: white">
+    </form>
+
+    {% if actors or movies or directors or genres %}
+        {% if movies %}
+            <h2>Found movies</h2>
+            <ul>
+                {% for movie in movies %}
+                    <li>
+                        <h3>Title: {{ movie.title }}</h3>
+                        <p>Rating: {{ movie.rating }}</p>
+                        <p>Released: {{ movie.released }}</p>
+                        
+                        <h4>Actors:</h4>
+                        <ul>
+                            {% for actor in movie.actors_list %}
+                                <li>{{ actor.name }} {{ actor.surname }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h4>Directors:</h4>
+                        <ul>
+                            {% for director in movie.director_list %}
+                                <li>{{ director.name }} {{ director.surname }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if actors %}
+    <h2>Found actors</h2>
+    <ul>
+        {% for actor in actors %}
+            <li>
+                Actor: {{ actor.name }} {{ actor.surname }}
+                <ul>
+                    {% for movie in actor.appeared_in_movies.all %}
+                        <li>Movie: {{ movie.title }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if directors %}
+    <h2>Found directors</h2>
+    <ul>
+        {% for director in directors %}
+            <li>
+                Director: {{ director.name }} {{ director.surname }}
+                <ul>
+                    {% for movie in director.directed_movies.all %}
+                        <li>Directed movie: {{ movie.title }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+        {% if genres %}
+            <h2>Found genres</h2>
+            <ul>
+                {% for genre in genres %}
+                    <li>{{ genre.name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+
+    <div>
+        <img src="{% static 'lupa.jpg' %}" style="border-radius: 200px; margin-top: 50px; margin-left: 250px" width="500" height="250">
+    </div>
+</body>
+{% endblock %}

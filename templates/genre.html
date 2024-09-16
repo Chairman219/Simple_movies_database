@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Genres</h1>
+    <a href="{% url 'genre_create' %}">
+        <button class="btn btn-outline-info" style="background-color: #343a40; color: white; margin-bottom: 10px; border-color: white">Add Genre</button>
+    </a>
+  <ul>
+    {% for genre in object_list %}
+      <li>
+        {{ genre.name }}
+      <a href="{% url "genre_delete" genre.pk %}">
+          <button style="margin-bottom: 3px; margin-left: 10px; border-radius: 5px"> Delete Genre</button>
+      </a>    
+      <a href="{% url 'genre_update' genre.pk%}"> 
+          <button style="margin-bottom: 3px; margin-left: 5px; border-radius: 5px"> Update Genre</button>
+      </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
