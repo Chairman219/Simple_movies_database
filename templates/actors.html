@@ -1,23 +1,42 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <head>
-        <link rel="stylesheet" href="{% static 'basic_style.css' %}">
-    </head>
-  <h1>Actors</h1>
-    <a href="{% url 'actor_create' %}">
-        <button class="btn btn-outline-info" style="background-color: #343a40; color: white; margin-bottom: 10px; border-color: white">Add Actor</button>
-    </a>
+<head>
+    <link rel="stylesheet" href="{% static 'basic_style.css' %}">
+</head>
+<h1>Actors</h1>
+    {% if user.is_authenticated %}
+        {% if perms.viewer.add_actor %}
+            <a href="{% url 'actor_create' %}">
+                <button class="btn btn-outline-info" style="background-color: #343a40; color: white; margin-bottom: 10px; border-color: white">Add Actor</button>
+            </a>
+        {% endif %}
+    {% endif %}
   <ul>
     {% for actor in object_list %}
       <li>
-        {{ actor.name }} {{ actor.surname }} - Age: {{ actor.age }} - Movie: {{ actor.movie.title }}
-      <a href="{% url "actor_delete" actor.pk %}">
-          <button style="margin-bottom: 3px; border-radius: 5px"> Delete Actor</button>
-      </a>    
-      <a href="{% url 'actor_update' actor.pk%}"> 
-          <button style="margin-bottom: 3px; border-radius: 5px"> Update Actor</button>
-      </a>
+        {{ actor.name }} {{ actor.surname }} - Age: {{ actor.age }}
+          <ul>
+              {% for movie in actor.appeared_in_movies.all %}
+                  <li>Movie: {{ movie.title }}</li>
+              {% empty %}
+                  <li>No movies played</li>
+              {% endfor %}
+          </ul>
+          {% if user.is_authenticated %}
+            {% if perms.viewer.delete_actor  %}
+                <a href="{% url "actor_delete" actor.pk %}">
+                    <button style="margin-bottom: 3px; border-radius: 5px"> Delete Actor</button>
+                </a>
+            {% endif %}
+          {% endif %}
+          {% if user.is_authenticated %}
+              {% if perms.viewer.change_actor  %}
+                  <a href="{% url 'actor_update' actor.pk%}">
+                      <button style="margin-bottom: 3px; border-radius: 5px"> Update Actor</button>
+                  </a>
+              {% endif %}
+          {% endif %}
       <a href="{% url "actor_profile" actor.pk %}">
           <button type="button" class="btn btn-outline-secondary" style="color: black; border-color: black; outline: darkgray" >Info</button>
       </a>
