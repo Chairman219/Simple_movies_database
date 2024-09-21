@@ -69,3 +69,20 @@ class Comment(Model):
   def __str__(self):
     return f"{self.user}: {self.text[:20]}"
 
+class Rating(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE)  # Který uživatel dal hodnocení
+  movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="ratings")  # Film, který je hodnocen
+  score = models.PositiveIntegerField()  # Hodnocení na škále 1–10
+
+  class Meta:
+    unique_together = ('user', 'movie')  # Každý uživatel může hodnotit film pouze jednou
+
+  def __str__(self):
+    return f"{self.user.username} rated {self.movie.title}: {self.score}"
+
+  @staticmethod
+  def calculate_average_rating(movie):
+    ratings = Rating.objects.filter(movie=movie)
+    if ratings.exists():
+      return ratings.aggregate(models.Avg('score'))['score__avg']
+    return 0

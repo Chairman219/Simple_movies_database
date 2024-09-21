@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render
-from viewer.models import Movie, Genre, Actor, Director, Comment
+from viewer.models import Movie, Genre, Actor, Director, Comment, Rating
 from django.views.generic import FormView, ListView, CreateView, DeleteView, UpdateView
 from logging import getLogger
 from viewer.forms import MovieForm, GenreForm, ActorForm, DirectorForm, SearchForm, SignUpForm, CommentForm
@@ -256,15 +256,26 @@ def movie_profile(request, movie_id):
     actors = movie.actors.all()
     directors = movie.directors.all()
     comments = Comment.objects.filter(content_type=ContentType.objects.get_for_model(movie), object_id=movie_id)
+    average_rating = Rating.calculate_average_rating(movie)  # Průměrné hodnocení filmu
+    rating_count = Rating.objects.filter(movie=movie).count()  # Počet hodnocení
 
     if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.content_object = movie
-            comment.save()
-            return redirect('movie_profile', movie_id=movie_id)
+        if "comment_submit" in request.POST:
+            # Přidání komentáře
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.user = request.user
+                comment.content_object = movie
+                comment.save()
+                return redirect('movie_profile', movie_id=movie_id)
+        elif "rating_submit" in request.POST:
+            # Přidání hodnocení
+            score = request.POST.get('score')
+            if score and 1 <= int(score) <= 10:
+                Rating.objects.update_or_create(user=request.user, movie=movie, defaults={'score': score})
+                return redirect('movie_profile', movie_id=movie_id)
+
     else:
         form = CommentForm()
 
@@ -272,7 +283,8 @@ def movie_profile(request, movie_id):
         'movie': movie,
         'comments': comments,
         'form': form,
-        "actors": actors,
-        "directors": directors
+        'actors': actors,
+        'directors': directors,
+        'average_rating': average_rating,
+        'rating_count': rating_count,  # Přidání počtu hodnocení
     })
-

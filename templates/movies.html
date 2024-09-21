@@ -13,7 +13,6 @@
         </a>
     {% endif %}
 {% endif %}
-
   <ul>
     {% for movie in object_list %}
       <li>
@@ -28,15 +27,16 @@
 
       {% if user.is_authenticated %}
           {% if perms.viewer.delete_movie %}
-        <a href="{% url 'movie_delete' movie.pk %}">
-            <button style="margin-bottom: 3px; border-radius: 5px"> Delete Movie</button>
-        </a>
+              <a href="{% url 'movie_delete' movie.pk %}">
+                  <button style="margin-bottom: 3px; border-radius: 5px"> Delete Movie</button>
+              </a>
+          {% endif %}
       {% endif %}
-        <a href="{% url "movie_profile" movie.pk %}"><button type="button" class="btn btn-outline-secondary" style="color: black; border-color: black; outline: darkgray" >Info</button></a>
+          <a href="{% url "movie_profile" movie.pk %}">
+              <button type="button" class="btn btn-outline-secondary" style="color: black; border-color: black; outline: darkgray" >Info</button>
+          </a>
       </li>
-        {% endif %}
     {% endfor %}
-  
   </ul>
     <img src="{% static "last_dinner.jpg" %}">
     {% endblock %}

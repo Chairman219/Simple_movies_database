@@ -3,40 +3,49 @@
 <h1>{{ movie.title }}</h1>
 <p><b>Genre:</b> {{ movie.genre }}</p>
 <p><b>Rating:</b> {{ movie.rating }}</p>
+<p><b>Average Rating:</b> {{ average_rating|floatformat:1 }} ({{ rating_count }} {{ rating_count|pluralize:"user has,users have" }} rated this movie)</p>
+<!-- Zobrazení průměrného hodnocení a počtu hodnocení -->
+
 <p><b>Released:</b> {{ movie.released }}</p>
 <p><b>Description:</b> {{ movie.description }}</p>
-    
-    
-    
- <h2>Directors:</h2>
-  <ul>
-    {% for director in directors %}
-      <li>{{ director.name }} {{ director.surname }}</li>
-    {% endfor %}
-  </ul>
-    
-  <h2>Actors:</h2>
-  <ul>
-    {% for actor in actors %}
-      <li>{{ actor.name }} {{ actor.surname }}</li>
-    {% endfor %}
-  </ul>
 
-  <h2>Comments:</h2>
-  <ul>
-    {% for comment in comments %}
-      <li>{{ comment.user.username }}: {{ comment.text }}</li>
-    {% endfor %}
-  </ul>
+<h2>Directors:</h2>
+<ul>
+  {% for director in directors %}
+    <li>{{ director.name }} {{ director.surname }}</li>
+  {% endfor %}
+</ul>
 
-  {% if user.is_authenticated %}
-    <h3>Add a comment:</h3>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Submit</button>
-    </form>
-  {% else %}
-    <p>You must be logged in to add a comment.</p>
-  {% endif %}
+<h2>Actors:</h2>
+<ul>
+  {% for actor in actors %}
+    <li>{{ actor.name }} {{ actor.surname }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Comments:</h2>
+<ul>
+  {% for comment in comments %}
+    <li>{{ comment.user.username }}: {{ comment.text }}</li>
+  {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+  <h3>Add a comment:</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="comment_submit" style="background-color: #343a40; color: white; border-radius: 5px">Submit</button>
+  </form>
+
+  <h3>Rate this movie:</h3>
+  <form method="post">
+    {% csrf_token %}
+    <label for="score">Your Rating (1-10):</label>
+    <input type="number" name="score" min="1" max="10" required>
+    <button type="submit" name="rating_submit" style="background-color: #343a40; color: white; border-radius: 5px">Submit Rating</button>
+  </form>
+{% else %}
+  <p>You must be logged in to add a comment or rating.</p>
+{% endif %}
 {% endblock %}
